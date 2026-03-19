@@ -1,0 +1,10 @@
+services:
+  watch-winder-dashboard:
+    image: watch-winder-dashboard:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: watch-winder-dashboard
+    restart: unless-stopped
+    ports:
+      - "8080:80"

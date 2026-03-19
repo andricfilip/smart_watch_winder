@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontrola navijanja automatskog sata</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <main class="app-shell">
+    <header class="hero">
+      <p class="kicker">Watch winder kontrola</p>
+      <h1>Kontrola navijanja automatskog sata</h1>
+      <p class="sub">Pouzdan panel za pracenje rada i precizno podesavanje watch winder uredjaja.</p>
+    </header>
+
+    <section class="panel connection-panel">
+      <h2>Konekcija</h2>
+      <div class="row">
+        <label for="deviceUrl">URL uredjaja</label>
+        <input id="deviceUrl" type="text" placeholder="http://192.168.1.111">
+      </div>
+      <div class="row two-col">
+        <div>
+          <label for="runMinutes">Tajmer rada (min, 0 = bez limita)</label>
+          <input id="runMinutes" type="number" min="0" max="1440" value="0">
+        </div>
+        <div class="actions-inline">
+          <button id="startBtn" class="btn" type="button">Start</button>
+          <button id="stopBtn" class="btn btn-danger" type="button">Stop</button>
+        </div>
+      </div>
+      <div class="row two-col">
+        <div>
+          <label for="deviceMode">Tip uredjaja</label>
+          <input id="deviceMode" type="hidden" value="single">
+          <div id="modePicker" class="mode-picker" role="tablist" aria-label="Izbor tipa uredjaja">
+            <button type="button" class="mode-btn is-active" data-mode="single">Single winder (1 sat)</button>
+            <button type="button" class="mode-btn" data-mode="double">Double winder (2 sata)</button>
+          </div>
+        </div>
+        <div class="actions-inline">
+          <button id="saveDeviceBtn" class="btn btn-secondary">Sacuvaj uredjaj</button>
+          <button id="refreshBtn" class="btn">Osvezi status</button>
+        </div>
+      </div>
+      <div class="status-strip">
+        <span id="statusBadge" class="badge">Nije povezano</span>
+        <span id="lastSync">Nema sinhronizacije</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="panel" id="singlePanel">
+        <h2>Podesavanja za jedan sat</h2>
+        <div class="row">
+          <label for="singleGiri">Okreti</label>
+          <input id="singleGiri" type="number" min="1" max="10" value="2">
+        </div>
+        <div class="row">
+          <label for="singleDelay">Pauza (min)</label>
+          <input id="singleDelay" type="number" min="1" max="60" value="3">
+        </div>
+        <div class="row">
+          <label for="singleSpeed">Brzina</label>
+          <input id="singleSpeed" type="number" min="1" max="5" value="3">
+        </div>
+        <button id="saveSingleBtn" class="btn">Sacuvaj podesavanja</button>
+      </article>
+
+      <article class="panel" id="doublePanel">
+        <h2>Podesavanja za dva sata</h2>
+        <div class="row two-col">
+          <div>
+            <label for="giri1">Motor 1 okreti</label>
+            <input id="giri1" type="number" min="0" max="10" value="2">
+          </div>
+          <div>
+            <label for="speed1">Motor 1 brzina</label>
+            <input id="speed1" type="number" min="1" max="5" value="3">
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="giri2">Motor 2 okreti</label>
+            <input id="giri2" type="number" min="0" max="10" value="2">
+          </div>
+          <div>
+            <label for="speed2">Motor 2 brzina</label>
+            <input id="speed2" type="number" min="1" max="5" value="3">
+          </div>
+        </div>
+        <div class="row">
+          <label for="gdelay">Globalna pauza (min)</label>
+          <input id="gdelay" type="number" min="1" max="60" value="3">
+        </div>
+        <button id="saveDoubleBtn" class="btn">Sacuvaj podesavanja</button>
+      </article>
+
+      <article class="panel panel-status">
+        <h2>Trenutni status uredjaja</h2>
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="label">Mod</span>
+            <span id="modeOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Mreza</span>
+            <span id="apOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Tajmer</span>
+            <span id="timerOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Stanje A</span>
+            <span id="stateAOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Stanje B</span>
+            <span id="stateBOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Aktivni motor</span>
+            <span id="activeMotorOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Preostali koraci</span>
+            <span id="stepsOut" class="value">-</span>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
