@@ -9,6 +9,8 @@ Ovaj projekat ima dva firmware fajla i jedan dashboard:
 ## API endpointi
 
 - `GET /api/status`
+- `GET /api/stats`
+- `GET /api/health`
 - `POST /api/config`
 - `POST /api/start`
 - `POST /api/stop`
@@ -30,23 +32,30 @@ Preporucene vrednosti:
 2. `AP_PASSWORD` promeni u jaku lozinku od bar 12 karaktera.
 3. `STA_CONNECT_TIMEOUT_MS = 10000` do `20000`.
 
-## Razlika single i double firmware-a
+## Razlika single i double firmware-a (TPD engine)
 
-Single (`winder/winder.ino`) parametri konfiguracije:
+Single (`winder/winder.ino`) glavni parametri:
 
-1. `giri` opseg `1-10`.
-2. `delay` opseg `1-60` minuta.
-3. `speed` opseg `1-5`.
-4. `runMinutes` opseg `0-1440`.
-
-Double (`doubleWinder/doubleWinder.ino`) parametri konfiguracije:
-
-1. `giri1` opseg `0-10`.
-2. `speed1` opseg `1-5`.
-3. `giri2` opseg `0-10`.
-4. `speed2` opseg `1-5`.
-5. `gdelay` opseg `1-60` minuta.
+1. `targetTPD` opseg `500-1000`.
+2. `direction`: `CW`, `CCW`, `BIDIR`.
+3. `mode`: `STANDARD` ili `SMART`.
+4. `speed` opseg `1-5`.
+5. `activeHours`: `[startHour, endHour]`.
 6. `runMinutes` opseg `0-1440`.
+
+Double (`doubleWinder/doubleWinder.ino`) glavni parametri:
+
+1. `targetTPD1`, `targetTPD2` opseg `500-1000`.
+2. `direction1`, `direction2`.
+3. `mode1`, `mode2`.
+4. `speed1`, `speed2` opseg `1-5`.
+5. `activeStartHour1/2`, `activeEndHour1/2`.
+6. `runMinutes` opseg `0-1440`.
+
+Napomena:
+
+1. Legacy polja (`giri`, `delay`, `giri1`, `giri2`, `gdelay`) su i dalje podrzana radi kompatibilnosti.
+2. Dashboard sada salje nova TPD polja kao JSON.
 
 ## Podrazumevano ponasanje tajmera
 
@@ -54,6 +63,20 @@ Double (`doubleWinder/doubleWinder.ino`) parametri konfiguracije:
 2. `POST /api/start` pokrece sistem.
 3. Ako je `runMinutes > 0`, sistem se sam zaustavlja po isteku vremena.
 4. `POST /api/stop` odmah zaustavlja sve motore (fail-safe stop).
+
+## Nova telemetrija u statusu
+
+`/api/status`, `/api/stats` i `/api/health` sada vracaju dodatne metrike:
+
+1. `rotationsToday`
+2. `rotationsLastHour`
+3. `currentTPD`
+4. `driftPercent`
+5. `currentTPDProgress`
+6. `remainingRotations`
+7. `motorState`
+8. `errorCode`
+9. `uptime`
 
 ## Pokretanje dashboard-a
 

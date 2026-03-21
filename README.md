@@ -7,7 +7,8 @@ This repository contains the complete watch-winder solution:
 1. ESP8266 firmware for one watch (`winder/winder.ino`)
 2. ESP8266 firmware for two watches (`doubleWinder/doubleWinder.ino`)
 3. Raspberry Pi web dashboard (`pi-dashboard/`)
-4. Assembly docs (SR + EN) in `docs/`
+4. Modern React dashboard (`pi-dashboard-modern/`)
+5. Assembly docs (SR + EN) in `docs/`
 
 The firmware is API-only (no embedded HTML UI), and the dashboard controls the device over HTTP.
 
@@ -19,6 +20,7 @@ The firmware is API-only (no embedded HTML UI), and the dashboard controls the d
 - `pi-dashboard/app.js` - dashboard logic and API calls
 - `pi-dashboard/style.css` - dashboard style
 - `pi-dashboard/docker-compose.yml` - dashboard container deploy
+- `pi-dashboard-modern/` - modern React + Vite dashboard
 - `docs/ASSEMBLY_GUIDE_SR.md` - assembly guide in Serbian
 - `docs/ASSEMBLY_GUIDE_EN.md` - assembly guide in English
 - `docs/images/` - wiring images used in docs
@@ -69,23 +71,24 @@ What they mean:
   - `false` -> no AP fallback, ESP stays without network if STA fails
 - `AP_*` = fallback network name/password
 
-## 5) Runtime Config Parameters
+## 5) Runtime Config Parameters (TPD Engine)
 
-### Single firmware (`winder/winder.ino`)
+The firmware now uses a time-based TPD scheduler instead of fixed `giri/delay` loops.
 
-- `giri` range: `1-10`
-- `delay` range: `1-60` minutes
+### Core parameters
+
+- `targetTPD` range: `500-1000` (hard cap)
+- `direction`: `CW`, `CCW`, `BIDIR`
+- `mode`: `STANDARD`, `SMART`
 - `speed` range: `1-5`
+- `activeHours`: `[startHour, endHour]` (0-23)
 - `runMinutes` range: `0-1440`
 
-### Double firmware (`doubleWinder/doubleWinder.ino`)
+### Optional quiet profile
 
-- `giri1` range: `0-10`
-- `speed1` range: `1-5`
-- `giri2` range: `0-10`
-- `speed2` range: `1-5`
-- `gdelay` range: `1-60` minutes
-- `runMinutes` range: `0-1440`
+- `quietMode`: `true/false`
+- `quietStartHour`, `quietEndHour`
+- `nightSpeedCap`
 
 Timer behavior:
 
@@ -97,6 +100,8 @@ Timer behavior:
 Available in both firmware variants:
 
 - `GET /api/status`
+- `GET /api/stats`
+- `GET /api/health`
 - `POST /api/config`
 - `POST /api/start`
 - `POST /api/stop`
@@ -105,6 +110,24 @@ Notes:
 
 - Config write is POST-only.
 - `POST /api/stop` is fail-safe and immediately releases motor outputs.
+- Legacy `giri/delay` keys are still accepted for backward compatibility.
+
+### Example `/api/config` payload
+
+```json
+{
+  "targetTPD": 650,
+  "direction": "BIDIR",
+  "mode": "SMART",
+  "speed": 3,
+  "activeHours": [8, 23],
+  "runMinutes": 0,
+  "quietMode": true,
+  "quietStartHour": 22,
+  "quietEndHour": 7,
+  "nightSpeedCap": 2
+}
+```
 
 ## 7) EEPROM Safety
 
@@ -120,8 +143,23 @@ This prevents invalid config loads when format changes or EEPROM data is corrupt
 
 Both firmware variants include:
 
-- effective step delay: `max(speed, 3 ms)`
-- step budget loop to avoid timing jitter during short CPU/network load spikes
+- non-blocking `millis()` scheduler (Wi-Fi friendly)
+- rolling 24h progress tracking with hourly drift correction
+- adaptive burst/pause distribution based on drift percent
+- soft start/stop step ramp to reduce vibration/noise
+- state machine: `IDLE`, `RUNNING`, `PAUSED`, `ERROR`, `TIMER_DONE`
+- robust persistence with versioned records, CRC, and dual-slot write strategy
+- periodic runtime snapshot for power-loss recovery
+
+New runtime metrics exposed via API:
+
+- `rotationsToday`
+- `rotationsLastHour`
+- `currentTPD`
+- `driftPercent`
+- `currentTPDProgress`
+- `remainingRotations`
+- `errorCode`
 
 ## 9) Flashing ESP8266
 

@@ -1,10 +1,10 @@
 services:
-  watch-winder-dashboard:
-    image: watch-winder-dashboard:latest
+  watch-winder-dashboard-modern:
+    image: watch-winder-dashboard-modern:latest
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: watch-winder-dashboard
+    container_name: watch-winder-dashboard-modern
     restart: unless-stopped
     environment:
       APP_DEVICE_MODE: single
@@ -14,4 +14,4 @@ services:
       APP_LANGUAGE: sr
       APP_LOCK_LANGUAGE: "false"
     ports:
-      - "8080:80"
+      - "8090:80"

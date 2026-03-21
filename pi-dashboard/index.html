@@ -13,30 +13,38 @@
   <div class="bg-grid" aria-hidden="true"></div>
   <main class="app-shell">
     <header class="hero">
-      <p class="kicker">Watch winder kontrola</p>
-      <h1>Kontrola navijanja automatskog sata</h1>
-      <p class="sub">Pouzdan panel za pracenje rada i precizno podesavanje watch winder uredjaja.</p>
+      <p class="kicker" data-i18n="heroKicker">Watch winder kontrola</p>
+      <h1 data-i18n="heroTitle">Kontrola navijanja automatskog sata</h1>
+      <p class="sub" data-i18n="heroSub">Pouzdan panel za pracenje rada i precizno podesavanje watch winder uredjaja.</p>
     </header>
 
     <section class="panel connection-panel">
-      <h2>Konekcija</h2>
-      <div class="row">
-        <label for="deviceUrl">URL uredjaja</label>
+      <h2 data-i18n="connectionTitle">Konekcija</h2>
+      <div class="row" id="deviceUrlRow">
+        <label for="deviceUrl" data-i18n="deviceUrlLabel">URL uredjaja</label>
         <input id="deviceUrl" type="text" placeholder="http://192.168.1.111">
+      </div>
+      <div class="row" id="languageRow">
+        <label data-i18n="languageLabel">Jezik</label>
+        <input id="uiLanguage" type="hidden" value="sr">
+        <div id="languagePicker" class="mode-picker" role="tablist" aria-label="Izbor jezika">
+          <button type="button" class="mode-btn is-active" data-lang="sr">Srpski</button>
+          <button type="button" class="mode-btn" data-lang="en">English</button>
+        </div>
       </div>
       <div class="row two-col">
         <div>
-          <label for="runMinutes">Tajmer rada (min, 0 = bez limita)</label>
+          <label for="runMinutes" data-i18n="timerLabel">Tajmer rada (min, 0 = bez limita)</label>
           <input id="runMinutes" type="number" min="0" max="1440" value="0">
         </div>
         <div class="actions-inline">
-          <button id="startBtn" class="btn" type="button">Start</button>
-          <button id="stopBtn" class="btn btn-danger" type="button">Stop</button>
+          <button id="startBtn" class="btn" type="button" data-i18n="startBtn">Start</button>
+          <button id="stopBtn" class="btn btn-danger" type="button" data-i18n="stopBtn">Stop</button>
         </div>
       </div>
       <div class="row two-col">
-        <div>
-          <label for="deviceMode">Tip uredjaja</label>
+        <div id="modeConfigRow">
+          <label for="deviceMode" data-i18n="deviceTypeLabel">Tip uredjaja</label>
           <input id="deviceMode" type="hidden" value="single">
           <div id="modePicker" class="mode-picker" role="tablist" aria-label="Izbor tipa uredjaja">
             <button type="button" class="mode-btn is-active" data-mode="single">Single winder (1 sat)</button>
@@ -44,8 +52,8 @@
           </div>
         </div>
         <div class="actions-inline">
-          <button id="saveDeviceBtn" class="btn btn-secondary">Sacuvaj uredjaj</button>
-          <button id="refreshBtn" class="btn">Osvezi status</button>
+          <button id="saveDeviceBtn" class="btn btn-secondary" data-i18n="saveDeviceBtn">Sacuvaj uredjaj</button>
+          <button id="refreshBtn" class="btn" data-i18n="refreshBtn">Osvezi status</button>
         </div>
       </div>
       <div class="status-strip">
@@ -56,28 +64,79 @@
 
     <section class="grid">
       <article class="panel" id="singlePanel">
-        <h2>Podesavanja za jedan sat</h2>
-        <div class="row">
-          <label for="singleGiri">Okreti</label>
-          <input id="singleGiri" type="number" min="1" max="10" value="2">
+        <h2 data-i18n="singleTitle">Podesavanja za jedan sat</h2>
+        <div class="row two-col">
+          <div>
+            <label for="singleTargetTPD">Target TPD</label>
+            <input id="singleTargetTPD" type="number" min="500" max="1000" value="650">
+          </div>
+          <div>
+            <label for="singleSpeed">Brzina</label>
+            <input id="singleSpeed" type="number" min="1" max="5" value="3">
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label data-i18n="directionLabel">Smer</label>
+            <input id="singleDirection" type="hidden" value="BIDIR">
+            <div class="option-picker" data-target="singleDirection">
+              <button type="button" class="option-btn" data-value="CW">CW</button>
+              <button type="button" class="option-btn" data-value="CCW">CCW</button>
+              <button type="button" class="option-btn is-active" data-value="BIDIR">BIDIR</button>
+            </div>
+          </div>
+          <div>
+            <label data-i18n="modeLabel">Mode</label>
+            <input id="singleMode" type="hidden" value="STANDARD">
+            <div class="option-picker" data-target="singleMode">
+              <button type="button" class="option-btn is-active" data-value="STANDARD">STANDARD</button>
+              <button type="button" class="option-btn" data-value="SMART">SMART</button>
+            </div>
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="singleActiveStart">Aktivno od (sat)</label>
+            <input id="singleActiveStart" type="number" min="0" max="23" value="0">
+          </div>
+          <div>
+            <label for="singleActiveEnd">Aktivno do (sat)</label>
+            <input id="singleActiveEnd" type="number" min="0" max="23" value="23">
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="singleSmartSwitch">Smart promena smera (rot)</label>
+            <input id="singleSmartSwitch" type="number" min="2" max="100" value="10">
+          </div>
+          <div class="checkbox-wrap">
+            <label for="singleQuietMode">Quiet mode</label>
+            <input id="singleQuietMode" type="checkbox" checked>
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="singleQuietStart">Quiet od (sat)</label>
+            <input id="singleQuietStart" type="number" min="0" max="23" value="22">
+          </div>
+          <div>
+            <label for="singleQuietEnd">Quiet do (sat)</label>
+            <input id="singleQuietEnd" type="number" min="0" max="23" value="7">
+          </div>
         </div>
         <div class="row">
-          <label for="singleDelay">Pauza (min)</label>
-          <input id="singleDelay" type="number" min="1" max="60" value="3">
+          <label for="singleNightSpeedCap">Night speed cap</label>
+          <input id="singleNightSpeedCap" type="number" min="1" max="5" value="2">
         </div>
-        <div class="row">
-          <label for="singleSpeed">Brzina</label>
-          <input id="singleSpeed" type="number" min="1" max="5" value="3">
-        </div>
-        <button id="saveSingleBtn" class="btn">Sacuvaj podesavanja</button>
+        <button id="saveSingleBtn" class="btn" data-i18n="saveSettingsBtn">Sacuvaj podesavanja</button>
       </article>
 
       <article class="panel" id="doublePanel">
-        <h2>Podesavanja za dva sata</h2>
+        <h2 data-i18n="doubleTitle">Podesavanja za dva sata</h2>
         <div class="row two-col">
           <div>
-            <label for="giri1">Motor 1 okreti</label>
-            <input id="giri1" type="number" min="0" max="10" value="2">
+            <label for="targetTPD1">Motor 1 target TPD</label>
+            <input id="targetTPD1" type="number" min="500" max="1000" value="650">
           </div>
           <div>
             <label for="speed1">Motor 1 brzina</label>
@@ -86,19 +145,103 @@
         </div>
         <div class="row two-col">
           <div>
-            <label for="giri2">Motor 2 okreti</label>
-            <input id="giri2" type="number" min="0" max="10" value="2">
+            <label data-i18n="motor1Direction">Motor 1 smer</label>
+            <input id="direction1" type="hidden" value="BIDIR">
+            <div class="option-picker" data-target="direction1">
+              <button type="button" class="option-btn" data-value="CW">CW</button>
+              <button type="button" class="option-btn" data-value="CCW">CCW</button>
+              <button type="button" class="option-btn is-active" data-value="BIDIR">BIDIR</button>
+            </div>
           </div>
+          <div>
+            <label data-i18n="motor1Mode">Motor 1 mode</label>
+            <input id="mode1" type="hidden" value="STANDARD">
+            <div class="option-picker" data-target="mode1">
+              <button type="button" class="option-btn is-active" data-value="STANDARD">STANDARD</button>
+              <button type="button" class="option-btn" data-value="SMART">SMART</button>
+            </div>
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="activeStartHour1">Motor 1 aktivno od</label>
+            <input id="activeStartHour1" type="number" min="0" max="23" value="0">
+          </div>
+          <div>
+            <label for="activeEndHour1">Motor 1 aktivno do</label>
+            <input id="activeEndHour1" type="number" min="0" max="23" value="23">
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="smartSwitchRotations1">Motor 1 smart switch (rot)</label>
+            <input id="smartSwitchRotations1" type="number" min="2" max="100" value="10">
+          </div>
+          <div>
+            <label for="targetTPD2">Motor 2 target TPD</label>
+            <input id="targetTPD2" type="number" min="500" max="1000" value="650">
+          </div>
+        </div>
+        <div class="row two-col">
           <div>
             <label for="speed2">Motor 2 brzina</label>
             <input id="speed2" type="number" min="1" max="5" value="3">
           </div>
+          <div>
+            <label data-i18n="motor2Direction">Motor 2 smer</label>
+            <input id="direction2" type="hidden" value="BIDIR">
+            <div class="option-picker" data-target="direction2">
+              <button type="button" class="option-btn" data-value="CW">CW</button>
+              <button type="button" class="option-btn" data-value="CCW">CCW</button>
+              <button type="button" class="option-btn is-active" data-value="BIDIR">BIDIR</button>
+            </div>
+          </div>
         </div>
-        <div class="row">
-          <label for="gdelay">Globalna pauza (min)</label>
-          <input id="gdelay" type="number" min="1" max="60" value="3">
+        <div class="row two-col">
+          <div>
+            <label data-i18n="motor2Mode">Motor 2 mode</label>
+            <input id="mode2" type="hidden" value="STANDARD">
+            <div class="option-picker" data-target="mode2">
+              <button type="button" class="option-btn is-active" data-value="STANDARD">STANDARD</button>
+              <button type="button" class="option-btn" data-value="SMART">SMART</button>
+            </div>
+          </div>
+          <div>
+            <label for="smartSwitchRotations2">Motor 2 smart switch (rot)</label>
+            <input id="smartSwitchRotations2" type="number" min="2" max="100" value="10">
+          </div>
         </div>
-        <button id="saveDoubleBtn" class="btn">Sacuvaj podesavanja</button>
+        <div class="row two-col">
+          <div>
+            <label for="activeStartHour2">Motor 2 aktivno od</label>
+            <input id="activeStartHour2" type="number" min="0" max="23" value="0">
+          </div>
+          <div>
+            <label for="activeEndHour2">Motor 2 aktivno do</label>
+            <input id="activeEndHour2" type="number" min="0" max="23" value="23">
+          </div>
+        </div>
+        <div class="row two-col">
+          <div class="checkbox-wrap">
+            <label for="quietMode">Quiet mode</label>
+            <input id="quietMode" type="checkbox" checked>
+          </div>
+          <div>
+            <label for="nightSpeedCap">Night speed cap</label>
+            <input id="nightSpeedCap" type="number" min="1" max="5" value="2">
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="quietStartHour">Quiet od (sat)</label>
+            <input id="quietStartHour" type="number" min="0" max="23" value="22">
+          </div>
+          <div>
+            <label for="quietEndHour">Quiet do (sat)</label>
+            <input id="quietEndHour" type="number" min="0" max="23" value="7">
+          </div>
+        </div>
+        <button id="saveDoubleBtn" class="btn" data-i18n="saveSettingsBtn">Sacuvaj podesavanja</button>
       </article>
 
       <article class="panel panel-status">
@@ -132,11 +275,48 @@
             <span class="label">Preostali koraci</span>
             <span id="stepsOut" class="value">-</span>
           </div>
+          <div class="status-item">
+            <span class="label">Error code</span>
+            <span id="errorOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Rotacije danas</span>
+            <span id="rotationsTodayOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Rotacije zadnji sat</span>
+            <span id="rotationsLastHourOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Current TPD</span>
+            <span id="currentTpdOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Drift %</span>
+            <span id="driftOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">TPD progress</span>
+            <span id="progressOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Preostale rotacije</span>
+            <span id="remainingOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Heap free</span>
+            <span id="heapOut" class="value">-</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Uptime</span>
+            <span id="uptimeOut" class="value">-</span>
+          </div>
         </div>
       </article>
     </section>
   </main>
 
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
